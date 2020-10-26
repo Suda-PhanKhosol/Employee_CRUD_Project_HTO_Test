@@ -14,27 +14,39 @@
             <v-col cols="10">
               <v-text-field
                 outlined
-                label="Customer ID"
-                v-model="videoRental.customerId"
+                label="Admin ID"
+                v-model="employee.adminId"
                 :rules="[(v) => !!v || 'Item is required']"
                 required
               ></v-text-field>
-              <p v-if="customerCheck != ''">Customer Name : {{customerName}}</p>
+              <p v-if="adminCheck != ''">Admin Name : {{adminName}}</p>
             </v-col>
             <v-col cols="2">
               <div class="my-2">
-                <v-btn @click="findCustomer" depressed large color="primary">Search</v-btn>
+                <v-btn @click="findAdmin" depressed large color="primary">Search</v-btn>
               </div>
             </v-col>
           </v-row>
 
-          <div v-if="customerCheck">
+
+          <v-col cols="10">
+              <v-text-field
+                outlined
+                label="Name"
+                v-model="employee.name"
+                :items="name"
+                :rules="[(v) => !!v || 'Item is required']"
+                required
+              ></v-text-field>
+            </v-col>
+
+          <div >
             <v-row>
               <v-col cols="10">
                 <v-select
-                  label="Employee"
+                  label="Gender"
                   outlined
-                  v-model="videoRental.employeeId"
+                  v-model="employee.genderId"
                   :items="employees"
                   item-text="name"
                   item-value="id"
@@ -43,38 +55,38 @@
                 ></v-select>
               </v-col>
             </v-row>
-            <v-row>
-              <v-col cols="10">
-                <v-select
-                  label="RentalType"
-                  outlined
-                  v-model="videoRental.rentalId"
-                  :items="rentalTypes"
-                  item-text="name"
-                  item-value="id"
-                  :rules="[(v) => !!v || 'Item is required']"
-                  required
-                ></v-select>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="10">
-                <v-select
-                  label="Video"
-                  outlined
-                  v-model="videoRental.videoId"
-                  :items="videos"
-                  item-text="title"
-                  item-value="id"
-                  :rules="[(v) => !!v || 'Item is required']"
-                  required
-                ></v-select>
-              </v-col>
-            </v-row>
+
+            <v-col cols="10">
+              <v-text-field
+                outlined
+                label="Phone"
+                v-model="employee.phone"
+                :items="phone"
+                :rules="[(v) => !!v || 'Item is required']"
+                required
+              ></v-text-field>
+            </v-col>
+
+             <v-col cols="10">
+              <v-text-field
+                outlined
+                label="Address"
+                v-model="employee.address"
+                :items="address"
+                :rules="[(v) => !!v || 'Item is required']"
+                required
+              ></v-text-field>
+            </v-col>
+
+            
+           
             <v-row justify="center">
               <v-col cols="12">
-                <v-btn @click="saveVideoRental" :class="{ red: !valid, green: valid }">submit</v-btn>
-                <v-btn style="margin-left: 15px;" @click="clear">clear</v-btn>
+                <v-btn depressed large class="gray" outlined color="black" @click="saveEmployee" :class="{ yellow: !valid, green: valid }">Create</v-btn>
+                
+                 <b-button style="margin-left :10px;">
+                     <router-link to="/view"  ><v-btn  depressed large class="gray" outlined color="black"   >View Data</v-btn></router-link>
+                </b-button>
               </v-col>
             </v-row>
             <br />
@@ -89,27 +101,32 @@
 import http from "../http-common";
 
 export default {
-  name: "videoRental",
+  name: "employee",
   data() {
     return {
-      videoRental: {
-        customerId: "",
-        employeeId: "",
-        rentalId: "",
-        videoId: ""
+      employee: {
+        adminId: "",
+        genderId: "",
+        name:"",
+        phone:"",
+        address:"",
+  
       },
+      name:[],
+      phone:[],
+      address:[],
       valid: false,
-      customerCheck: false,
-      customerName: ""
+      adminCheck: false,
+      adminName: ""
     };
   },
   methods: {
     /* eslint-disable no-console */
 
-    // ดึงข้อมูล Employee ใส่ combobox
-    getEmployees() {
+
+    getGender() {
       http
-        .get("/employee")
+        .get("/gender")
         .then(response => {
           this.employees = response.data;
           console.log(response.data);
@@ -118,39 +135,15 @@ export default {
           console.log(e);
         });
     },
-    // ดึงข้อมูล Video ใส่ combobox
-    getVideos() {
+
+    findAdmin() {
       http
-        .get("/video")
-        .then(response => {
-          this.videos = response.data;
-          console.log(response.data);
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    },
-    // ดึงข้อมูล RentalType ใส่ combobox
-    getRentalTypes() {
-      http
-        .get("/rentalType")
-        .then(response => {
-          this.rentalTypes = response.data;
-          console.log(response.data);
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    },
-    // function ค้นหาลูกค้าด้วย ID
-    findCustomer() {
-      http
-        .get("/customer/" + this.videoRental.customerId)
+        .get("/admin/" + this.employee.adminId)
         .then(response => {
           console.log(response);
           if (response.data != null) {
-            this.customerName = response.data.name;
-            this.customerCheck = response.status;
+            this.adminName = response.data.name;
+            this.adminCheck = response.status;
           } else {
             this.clear()
           }          
@@ -161,18 +154,11 @@ export default {
       this.submitted = true;
     },
     // function เมื่อกดปุ่ม submit
-    saveVideoRental() {
+    saveEmployee() {
       http
         .post(
-          "/videoRental/" +
-            this.videoRental.customerId +
-            "/" +
-            this.videoRental.employeeId +
-            "/" +
-            this.videoRental.videoId +
-            "/" +
-            this.videoRental.rentalId,
-          this.videoRental
+          "/employee/" + this.employee.name + "/" + this.employee.phone + "/" + this.employee.genderId + "/" + this.employee.address+ "/" + this.employee.adminId,
+          this.employee
         )
         .then(response => {
           console.log(response);
@@ -182,22 +168,21 @@ export default {
           console.log(e);
         });
       this.submitted = true;
+       alert("Create Infomation Sucessful");  
     },
     clear() {
       this.$refs.form.reset();
-      this.customerCheck = false;
+      this.adminCheck = false;
     },
     refreshList() {
-      this.getEmployees();
-      this.getVideos();
-      this.getRentalTypes();
+      this.getGender();
+  
     }
     /* eslint-enable no-console */
   },
   mounted() {
-    this.getEmployees();
-    this.getVideos();
-    this.getRentalTypes();
+    this.getGender();
+
   }
 };
 </script>

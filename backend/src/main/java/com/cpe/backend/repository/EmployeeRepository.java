@@ -8,5 +8,8 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 @RepositoryRestResource
 public
 interface EmployeeRepository extends JpaRepository<Employee, Long> {
-	Employee findById(long id);
+    Employee findById(long id);
+
+  
+    void deleteById(Long id);
 }

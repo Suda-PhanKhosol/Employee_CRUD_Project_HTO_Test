@@ -3,33 +3,51 @@ package com.cpe.backend.entity;
 import lombok.*;
 
 import javax.persistence.Id;
-
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import java.util.Collection;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+
+import com.cpe.backend.entity.Gender;
 
 @Data
 @Entity
 @NoArgsConstructor
 @Table(name="EMPLOYEE")
 public class Employee {
+
     @Id
-    @SequenceGenerator(name="EMPLOYEE_SEQ",sequenceName="EMPLOYEE_SEQ")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="EMPLOYEE_SEQ")
-    @Column(name="EMPLOYEE_ID",unique = true, nullable = true)
+    @SequenceGenerator(name="employee_seq",sequenceName="employee_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="employee_seq")
+    @Column(name = "EMPLOYEE_ID", unique = true, nullable = true)
     private @NonNull Long id;
 
-    private @NonNull String name;
+    private  String name;
+    private  String phone;
+    private  String address;
+    private boolean status;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    // mappedBy  = "createdBy"
-    private Collection<VideoRental> rent;
+    
+    @ManyToOne(fetch = FetchType.EAGER, targetEntity = Gender.class)
+    @JoinColumn(name = "GENDER_ID", insertable = true)
+    private Gender createdBy;//gender
+
+    
+    @ManyToOne(fetch = FetchType.EAGER, targetEntity = Admin.class)
+    @JoinColumn(name = "ADMIN_ID", insertable = true)
+    private Admin rentAdmin;//admin
+    
+    public void setAddress(String address) {
+		this.address = address;
+	}
+
 }

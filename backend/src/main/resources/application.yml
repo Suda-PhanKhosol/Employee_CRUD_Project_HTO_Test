@@ -2,11 +2,15 @@
 # Code ในการ Run H2 Database 
 # http://localhost:9000/h2-console ->  JDBC URL ใส่ค่าเป็น jdbc:h2:mem:testdb
 spring:
+   datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://157.245.196.71:3306/Employee
+    username: root
+    password: my-secret-pw
    jpa:
-      show-sql: true
-   h2:
-      console:
-         enabled: true
+    hibernate.ddl-auto: update
+    generate-ddl: true
+    show-sql: true
 
 server:  
   port: 9000

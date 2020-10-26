@@ -20,16 +20,16 @@ import javax.persistence.Entity;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name="CUSTOMER")
-public class Customer {
+@Table(name="ADMIN")
+public class Admin {
 	@Id
-	@SequenceGenerator(name="customer_seq",sequenceName="customer_seq")
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="customer_seq")
-	@Column(name="CUSTOMER_ID",unique = true, nullable = true)
+	@SequenceGenerator(name="admin_seq",sequenceName="admin_seq")
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="admin_seq")
+	@Column(name="ADMIN_ID",unique = true, nullable = true)
 	private @NonNull Long id;
 	private @NonNull String name;
 
-	@OneToMany(fetch = FetchType.EAGER)
-	// mappedBy  = "rentCustomer"
-	private Collection<VideoRental> rent;
+
+	@OneToMany
+	private Collection<Employee> admin_employee;
 }
